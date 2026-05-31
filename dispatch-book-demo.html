@@ -1,0 +1,3446 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dispatch Book Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css"
+    />
+    <style>
+      /* ── THEME DESIGN STYLES ───────────────────────────────── */
+      :root {
+        --bg: #f8fafc;
+        --surface: #ffffff;
+        --surface-2: #f1f5f9;
+        --surface-3: #e2e8f0;
+        --border: #e2e8f0;
+        --border-soft: #f1f5f9;
+
+        --text-primary: #0f172a;
+        --text-secondary: #475569;
+        --text-tertiary: #64748b;
+        --text-muted: #94a3b8;
+
+        --accent: #2563eb;
+        --accent-light: #eff6ff;
+        --accent-mid: #bfdbfe;
+
+        --green: #16a34a;
+        --green-light: #f0fdf4;
+        --amber: #d97706;
+        --amber-light: #fef3c7;
+        --red: #dc2626;
+        --red-light: #fef2f2;
+
+        --sidebar-w: 240px;
+        --topbar-h: 64px;
+
+        --radius-sm: 6px;
+        --radius-md: 10px;
+        --radius-lg: 14px;
+        --radius-xl: 18px;
+
+        --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.05);
+        --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.08);
+        --shadow-lg: 0 10px 15px -3px rgba(15, 23, 42, 0.08);
+      }
+
+      /* ── SYSTEM BASE CLEAN RESET ───────────────────────────── */
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: "DM Sans", sans-serif;
+        font-size: 14px;
+        color: var(--text-primary);
+        background: var(--bg);
+        height: 100vh;
+        overflow: hidden;
+        -webkit-font-smoothing: antialiased;
+      }
+      button,
+      input,
+      select,
+      textarea {
+        font-family: inherit;
+        font-size: inherit;
+        color: inherit;
+      }
+      button {
+        cursor: pointer;
+        border: none;
+        background: none;
+      }
+      input:focus,
+      select:focus,
+      textarea:focus {
+        outline: 2px solid var(--accent);
+        outline-offset: 1px;
+      }
+
+      /* ── CORE APP WRAPPER LAYOUT ────────────────────────────── */
+      .app-wrapper {
+        display: flex;
+        height: 100vh;
+        width: 100vw;
+        overflow: hidden;
+      }
+
+      /* ── SIDEBAR PANEL DESIGN ───────────────────────────────── */
+      .sidebar {
+        width: var(--sidebar-w);
+        background: var(--surface);
+        border-right: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        flex-shrink: 0;
+      }
+      .sidebar-header {
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        border-bottom: 1px solid var(--border-soft);
+      }
+      .logo-box {
+        width: 36px;
+        height: 36px;
+        background: var(--accent);
+        color: white;
+        border-radius: var(--radius-md);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+      }
+      .logo-title {
+        font-weight: 700;
+        font-size: 16px;
+        color: var(--text-primary);
+      }
+      .logo-subtitle {
+        font-size: 11px;
+        color: var(--text-tertiary);
+      }
+
+      .view-switcher-box {
+        padding: 12px 16px;
+        background: var(--surface-2);
+        margin: 12px 16px;
+        border-radius: var(--radius-md);
+      }
+      .switcher-label {
+        font-size: 10px;
+        text-transform: uppercase;
+        font-weight: 700;
+        color: var(--text-tertiary);
+        margin-bottom: 6px;
+      }
+      .switcher-tabs {
+        display: flex;
+        gap: 4px;
+        background: var(--surface-3);
+        padding: 2px;
+        border-radius: 6px;
+      }
+      .switcher-btn {
+        flex: 1;
+        font-size: 11px;
+        padding: 6px 2px;
+        text-align: center;
+        border-radius: 4px;
+        color: var(--text-secondary);
+        font-weight: 500;
+      }
+      .switcher-btn.active {
+        background: var(--surface);
+        color: var(--accent);
+        box-shadow: var(--shadow-sm);
+      }
+
+      .nav-group {
+        padding: 8px 0;
+        overflow-y: auto;
+        flex: 1;
+      }
+      .nav-group-title {
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: var(--text-muted);
+        padding: 6px 24px;
+        letter-spacing: 0.05em;
+      }
+
+      .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 20px;
+        margin: 2px 12px;
+        border-radius: var(--radius-md);
+        color: var(--text-secondary);
+        font-weight: 500;
+        transition: all 150ms ease;
+        position: relative;
+        text-decoration: none;
+      }
+      .nav-item:hover {
+        background: var(--surface-2);
+        color: var(--text-primary);
+      }
+      .nav-item.active {
+        background: var(--accent-light);
+        color: var(--accent);
+      }
+      .nav-item i {
+        font-size: 18px;
+      }
+      .nav-badge {
+        margin-left: auto;
+        background: var(--accent);
+        color: white;
+        font-size: 10px;
+        padding: 2px 6px;
+        border-radius: 10px;
+        font-weight: 600;
+      }
+      .nav-badge.alert {
+        background: var(--amber);
+      }
+
+      .nav-dropdown {
+        display: flex;
+        flex-direction: column;
+      }
+      .nav-dropdown-row {
+        display: flex;
+        align-items: center;
+        width: 100%;
+      }
+      .dropdown-arrow {
+        margin-left: auto;
+        font-size: 14px;
+        transition: transform 150ms;
+        padding: 4px;
+        border-radius: 4px;
+      }
+      .dropdown-arrow:hover {
+        background: var(--surface-3);
+      }
+      .sub-menu-list {
+        display: none;
+        padding: 4px 0 4px 44px;
+      }
+      .sub-menu-list.open {
+        display: block;
+      }
+      .sub-menu-item {
+        display: block;
+        padding: 6px 12px;
+        font-size: 12px;
+        color: var(--text-secondary);
+        border-radius: var(--radius-sm);
+        margin: 1px 12px 1px 0;
+        text-decoration: none;
+      }
+      .sub-menu-item:hover {
+        background: var(--surface-2);
+        color: var(--accent);
+      }
+
+      .sidebar-bottom {
+        border-top: 1px solid var(--border-soft);
+        padding: 12px 0;
+      }
+      .nav-item.disabled {
+        opacity: 0.4;
+        pointer-events: none;
+      }
+
+      /* ── WORKSPACE WINDOW STRUCTURE ─────────────────────────── */
+      .main-panel {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        min-width: 0;
+      }
+      .topbar {
+        height: var(--topbar-h);
+        background: var(--surface);
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 24px;
+        flex-shrink: 0;
+      }
+      .topbar-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--text-primary);
+      }
+      .topbar-actions {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .view-container {
+        flex: 1;
+        overflow-y: auto;
+        padding: 24px;
+      }
+      .view-tab-content {
+        display: none;
+      }
+      .view-tab-content.active {
+        display: block;
+        animation: viewFade 150ms ease;
+      }
+      @keyframes viewFade {
+        from {
+          opacity: 0;
+          transform: translateY(4px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* ── UNIVERSAL CARD & BUTTON DESIGN ─────────────────────── */
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-xl);
+        box-shadow: var(--shadow-sm);
+        margin-bottom: 24px;
+        overflow: hidden;
+      }
+      .card-header {
+        padding: 16px 20px;
+        border-bottom: 1px solid var(--border-soft);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .card-title {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text-primary);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .card-title i {
+        color: var(--text-tertiary);
+        font-size: 18px;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        height: 38px;
+        padding: 0 16px;
+        border-radius: var(--radius-md);
+        font-size: 13px;
+        font-weight: 600;
+        transition: all 150ms;
+      }
+      .btn-primary {
+        background: var(--accent);
+        color: white;
+      }
+      .btn-primary:hover {
+        background: #1d4ed8;
+      }
+      .btn-secondary {
+        background: var(--surface-2);
+        color: var(--text-secondary);
+        border: 1px solid var(--border);
+      }
+      .btn-secondary:hover {
+        background: var(--surface-3);
+        color: var(--text-primary);
+      }
+      .btn-sm {
+        height: 32px;
+        padding: 0 12px;
+        font-size: 12px;
+        border-radius: var(--radius-sm);
+      }
+
+      /* ── DATA TABLES SYSTEM ─────────────────────────────────── */
+      .table-box {
+        overflow-x: auto;
+        width: 100%;
+      }
+      .table-ui {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: left;
+        font-size: 13px;
+      }
+      .table-ui th {
+        background: var(--bg);
+        padding: 12px 18px;
+        font-weight: 600;
+        color: var(--text-tertiary);
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        border-bottom: 1px solid var(--border);
+      }
+      .table-ui td {
+        padding: 14px 18px;
+        border-bottom: 1px solid var(--border-soft);
+        color: var(--text-secondary);
+        vertical-align: middle;
+      }
+      .table-ui tr:last-child td {
+        border-bottom: none;
+      }
+      .table-ui tr:hover td {
+        background: var(--bg);
+      }
+
+      /* ── ANALYTICS TILES ────────────────────────────────────── */
+      .metrics-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 16px;
+        margin-bottom: 24px;
+      }
+      .metric-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        padding: 20px;
+        border-radius: var(--radius-xl);
+        box-shadow: var(--shadow-sm);
+      }
+      .metric-label {
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--text-tertiary);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .metric-value {
+        font-size: 24px;
+        font-weight: 700;
+        color: var(--text-primary);
+      }
+      .metric-subtext {
+        font-size: 12px;
+        color: var(--text-muted);
+        margin-top: 4px;
+      }
+      .metric-subtext.green-text {
+        color: var(--green);
+        font-weight: 500;
+      }
+
+      /* ── BADGES & TEAM LABELS ───────────────────────────────── */
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: 600;
+      }
+      .badge-blue {
+        background: var(--accent-light);
+        color: var(--accent);
+      }
+      .badge-green {
+        background: var(--green-light);
+        color: var(--green);
+      }
+      .badge-amber {
+        background: var(--amber-light);
+        color: var(--amber);
+      }
+      .badge-red {
+        background: var(--red-light);
+        color: var(--red);
+      }
+
+      .avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: var(--surface-3);
+        color: var(--text-secondary);
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+      }
+      .avatar-b {
+        background: #dbeafe;
+        color: #2563eb;
+      }
+      .avatar-p {
+        background: #f3e8ff;
+        color: #7c3aed;
+      }
+      .avatar-a {
+        background: #fef3c7;
+        color: #d97706;
+      }
+
+      .user-info-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .user-name-title {
+        font-weight: 600;
+        color: var(--text-primary);
+      }
+      .user-sub-title {
+        font-size: 11px;
+        color: var(--text-tertiary);
+      }
+
+      /* Filter Bars */
+      .filter-row {
+        display: flex;
+        gap: 8px;
+        padding: 12px 20px;
+        background: var(--surface);
+        border-bottom: 1px solid var(--border-soft);
+        align-items: center;
+      }
+      .filter-chip {
+        padding: 6px 14px;
+        font-size: 12px;
+        font-weight: 600;
+        border-radius: 20px;
+        background: var(--bg);
+        color: var(--text-secondary);
+      }
+      .filter-chip:hover {
+        background: var(--surface-3);
+      }
+      .filter-chip.active {
+        background: var(--text-primary);
+        color: white;
+      }
+
+      /* Layout Grids */
+      .split-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 20px;
+        align-items: start;
+      }
+      @media (max-width: 1024px) {
+        .split-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      /* Schedule Timeline View Elements */
+      .schedule-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        padding: 20px;
+      }
+      .schedule-item-card {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px;
+        border: 1px solid var(--border-soft);
+        border-radius: var(--radius-lg);
+        background: var(--surface);
+      }
+      .schedule-route-info {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+      .schedule-time-text {
+        font-weight: 500;
+        font-size: 12px;
+        color: var(--text-primary);
+      }
+
+      /* Form Input Elements Styling */
+      .input-group {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        margin-bottom: 14px;
+      }
+      .input-group label {
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: var(--text-secondary);
+        letter-spacing: 0.02em;
+      }
+      .form-input {
+        height: 38px;
+        padding: 0 12px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        background: white;
+        font-size: 13px;
+        color: var(--text-primary);
+      }
+      .fields-2-col {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+      .fields-3-col {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 12px;
+      }
+
+      /* Calculator Block Module Styles */
+      .calc-container-box {
+        background: var(--accent-light);
+        border: 1px solid var(--accent-mid);
+        border-radius: var(--radius-xl);
+        padding: 20px;
+        margin-bottom: 24px;
+      }
+      .calc-flex-row {
+        display: flex;
+        gap: 20px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+
+      /* ── POP-UP WINDOW / MODAL DESIGN ──────────────────────── */
+      .modal-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 23, 42, 0.4);
+        backdrop-filter: blur(2px);
+        z-index: 100;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 16px;
+      }
+      .modal-backdrop.active {
+        display: flex;
+      }
+      .modal-content-window {
+        background: var(--surface);
+        border-radius: var(--radius-xl);
+        box-shadow: var(--shadow-lg);
+        width: 100%;
+        max-width: 600px;
+        overflow: hidden;
+        animation: popUp 180ms ease-out;
+      }
+      @keyframes popUp {
+        from {
+          transform: scale(0.97);
+          opacity: 0;
+        }
+        to {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+      .modal-top-bar {
+        padding: 16px 20px;
+        border-bottom: 1px solid var(--border-soft);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: var(--bg);
+      }
+      .modal-top-bar h3 {
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--text-primary);
+      }
+      .modal-body-form {
+        padding: 20px;
+        max-height: 80vh;
+        overflow-y: auto;
+      }
+      .modal-bottom-bar {
+        padding: 14px 20px;
+        border-top: 1px solid var(--border-soft);
+        background: var(--bg);
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+      }
+
+      /* Toggle Switch Element UI */
+      .toggle-element {
+        position: relative;
+        display: inline-block;
+        width: 36px;
+        height: 20px;
+      }
+      .toggle-element input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+      .toggle-background {
+        position: absolute;
+        cursor: pointer;
+        inset: 0;
+        background-color: var(--text-muted);
+        transition: 0.2s;
+        border-radius: 20px;
+      }
+      .toggle-background:before {
+        position: absolute;
+        content: "";
+        height: 14px;
+        width: 14px;
+        left: 3px;
+        bottom: 3px;
+        background-color: white;
+        transition: 0.2s;
+        border-radius: 50%;
+      }
+      input:checked + .toggle-background {
+        background-color: var(--green);
+      }
+      input:checked + .toggle-background:before {
+        transform: translateX(16px);
+      }
+
+      /* Load Entry Form Form Section Groups */
+      .form-section-header {
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: var(--accent);
+        border-bottom: 1px solid var(--border-soft);
+        padding-bottom: 4px;
+        margin-bottom: 12px;
+        margin-top: 6px;
+      }
+
+      /* Chat Comms Shell Component */
+      .chat-shell {
+        display: grid;
+        grid-template-columns: 240px 1fr;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        height: 460px;
+        background: white;
+        overflow: hidden;
+      }
+      .chat-user-list {
+        border-right: 1px solid var(--border-soft);
+        overflow-y: auto;
+        background: var(--bg);
+      }
+      .chat-user-row {
+        padding: 12px 16px;
+        border-bottom: 1px solid var(--border-soft);
+        cursor: pointer;
+      }
+      .chat-user-row.active {
+        background: white;
+      }
+      .chat-message-window {
+        display: flex;
+        flex-direction: column;
+        background: var(--bg);
+      }
+      .chat-stream {
+        flex: 1;
+        padding: 16px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .chat-bubble {
+        max-width: 75%;
+        padding: 10px 14px;
+        border-radius: var(--radius-md);
+        font-size: 13px;
+        line-height: 1.4;
+      }
+      .chat-bubble.inbound {
+        background: white;
+        align-self: flex-start;
+        box-shadow: var(--shadow-sm);
+        border: 1px solid var(--border-soft);
+      }
+      .chat-bubble.outbound {
+        background: var(--accent);
+        color: white;
+        align-self: flex-end;
+      }
+      .chat-input-bar {
+        padding: 12px;
+        background: white;
+        border-top: 1px solid var(--border-soft);
+        display: flex;
+        gap: 8px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app-wrapper">
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <div class="logo-box"><i class="ti ti-scooter"></i></div>
+          <div>
+            <div class="logo-title">Dispatch Book</div>
+            <div class="logo-subtitle">Fleet Management System</div>
+          </div>
+        </div>
+
+        <div class="view-switcher-box">
+          <div class="switcher-label">View System As</div>
+          <div class="switcher-tabs">
+            <button
+              class="switcher-btn active"
+              onclick="swapSystemViewRoleContext('owner', this)"
+            >
+              Owner
+            </button>
+            <button
+              class="switcher-btn"
+              onclick="swapSystemViewRoleContext('dispatcher', this)"
+            >
+              Dispatcher
+            </button>
+            <button
+              class="switcher-btn"
+              onclick="swapSystemViewRoleContext('driver', this)"
+            >
+              Driver
+            </button>
+          </div>
+        </div>
+
+        <div class="nav-group">
+          <div class="nav-group-title">Operations</div>
+          <a
+            href="#"
+            class="nav-item active"
+            id="nav-dashboard"
+            onclick="routeToTargetTabFrame('dashboard', this)"
+          >
+            <i class="ti ti-layout-dashboard"></i> <span>Dashboard</span>
+          </a>
+          <a
+            href="#"
+            class="nav-item"
+            id="nav-loads"
+            onclick="routeToTargetTabFrame('loads', this)"
+          >
+            <i class="ti ti-box"></i> <span>Loads </span>
+            <span class="nav-badge" id="badge-count-loads-ui">5</span>
+          </a>
+          <a
+            href="#"
+            class="nav-item"
+            id="nav-schedules"
+            onclick="routeToTargetTabFrame('schedules', this)"
+          >
+            <i class="ti ti-calendar-event"></i> <span>Schedules</span>
+          </a>
+
+          <div class="nav-group-title">Financial Records</div>
+          <a
+            href="#"
+            class="nav-item"
+            id="nav-gross"
+            onclick="routeToTargetTabFrame('gross', this)"
+          >
+            <i class="ti ti-currency-dollar"></i>
+            <span>Gross Profit</span>
+          </a>
+          <a
+            href="#"
+            class="nav-item"
+            id="nav-rpm"
+            onclick="routeToTargetTabFrame('rpm', this)"
+          >
+            <i class="ti ti-chart-arrows"></i> <span>Rate Per Mile</span>
+          </a>
+
+          <div class="nav-group-title">Fleet Logistics</div>
+          <a
+            href="#"
+            class="nav-item"
+            id="nav-equipment"
+            onclick="routeToTargetTabFrame('equipment', this)"
+          >
+            <i class="ti ti-truck"></i> <span>Equipments</span>
+          </a>
+          <a
+            href="#"
+            class="nav-item"
+            id="nav-drivers"
+            onclick="routeToTargetTabFrame('drivers', this)"
+          >
+            <i class="ti ti-users-group"></i> <span>Drivers Pool</span>
+          </a>
+
+          <div
+            class="nav-item nav-dropdown"
+            id="nav-documents"
+            onclick="handleDocumentMainTabClick(event, this)"
+          >
+            <div class="nav-dropdown-row">
+              <i class="ti ti-folder-check"></i><span>Documents </span>
+              <i
+                class="ti ti-chevron-down dropdown-arrow"
+                onclick="toggleDocumentChevronArrowMenu(event)"
+              ></i>
+            </div>
+          </div>
+          <div class="sub-menu-list" id="documents-submenu-container">
+            <a
+              href="#"
+              class="sub-menu-item"
+              onclick="routeToTargetTabFrame('documents', null, 'pod')"
+              >Proof of Delivery (POD)</a
+            >
+            <a
+              href="#"
+              class="sub-menu-item"
+              onclick="routeToTargetTabFrame('documents', null, 'bol')"
+              >Bills of Lading (BOL)</a
+            >
+            <a
+              href="#"
+              class="sub-menu-item"
+              onclick="routeToTargetTabFrame('documents', null, 'rate_conf')"
+              >Rate Confirmations</a
+            >
+          </div>
+
+          <a
+            href="#"
+            class="nav-item"
+            id="nav-maintenance"
+            onclick="routeToTargetTabFrame('maintenance', this)"
+          >
+            <i class="ti ti-car-garage"></i>
+            <span>Maintenance Logs</span>
+            <span class="nav-badge alert">1</span>
+          </a>
+          <a
+            href="#"
+            class="nav-item"
+            id="nav-messages"
+            onclick="routeToTargetTabFrame('messages', this)"
+          >
+            <i class="ti ti-messages"></i> <span>Chat Messages</span>
+          </a>
+
+          <div id="admin-heading-section-block">
+            <div class="nav-group-title">Management</div>
+            <a
+              href="#"
+              class="nav-item"
+              id="nav-accounts"
+              onclick="routeToTargetTabFrame('accounts', this)"
+            >
+              <i class="ti ti-users"></i> <span>Accounts & Access</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="sidebar-bottom">
+          <a
+            href="#"
+            class="nav-item"
+            id="nav-settings"
+            onclick="routeToTargetTabFrame('settings', this)"
+            ><i class="ti ti-settings"></i> <span>Settings</span></a
+          >
+          <a
+            href="#"
+            class="nav-item"
+            id="nav-myaccount"
+            onclick="routeToTargetTabFrame('myaccount', this)"
+            ><i class="ti ti-user-circle"></i>
+            <span>My Account Summary</span></a
+          >
+        </div>
+      </aside>
+
+      <main class="main-panel">
+        <header class="topbar">
+          <div class="topbar-left">
+            <h2 id="current-view-title-label">Dashboard Summary</h2>
+          </div>
+          <div class="topbar-actions">
+            <button class="btn btn-secondary btn-sm" style="height: 34px">
+              <i class="ti ti-bell"></i>
+            </button>
+            <button
+              class="btn btn-primary btn-sm"
+              style="height: 34px"
+              onclick="triggerModalVisibilityState('modal-add-load', true)"
+            >
+              <i class="ti ti-plus"></i> Dispatch New Load
+            </button>
+          </div>
+        </header>
+
+        <div class="view-container">
+          <div class="view-tab-content active" id="view-dashboard">
+            <div class="metrics-grid">
+              <div class="metric-card">
+                <div class="metric-label">
+                  <span>Active Loads Currently En Route</span
+                  ><i class="ti ti-box" style="color: var(--accent)"></i>
+                </div>
+                <div class="metric-value" id="m-dash-load-counter">5</div>
+                <div class="metric-subtext">Assigned to working drivers</div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-label">
+                  <span>Completed Deliveries (Today)</span
+                  ><i
+                    class="ti ti-circle-check"
+                    style="color: var(--green)"
+                  ></i>
+                </div>
+                <div class="metric-value">1</div>
+                <div class="metric-subtext green-text">
+                  ↑ Delivery schedule running clean
+                </div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-label">
+                  <span>Current Gross Revenue Total</span
+                  ><i class="ti ti-cash" style="color: var(--purple)"></i>
+                </div>
+                <div class="metric-value" id="m-dash-gross-revenue-text">
+                  $4,504
+                </div>
+                <div class="metric-subtext">
+                  Total generated income before overhead fees
+                </div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-label">
+                  <span>Average Rate Per Mile Floor</span
+                  ><i class="ti ti-trending-up" style="color: var(--amber)"></i>
+                </div>
+                <div class="metric-value">$2.17</div>
+                <div class="metric-subtext">
+                  System-wide performance average
+                </div>
+              </div>
+            </div>
+
+            <div class="split-grid">
+              <div class="card">
+                <div class="card-header">
+                  <div class="card-title">
+                    <i class="ti ti-list-search"></i> Active Load Dispatch Board
+                  </div>
+                </div>
+                <div class="table-box">
+                  <table class="table-ui" id="dashboard-dispatch-board-table">
+                    <thead>
+                      <tr>
+                        <th>Load ID</th>
+                        <th>Assigned Driver</th>
+                        <th>Trailer Style</th>
+                        <th>Route Location Path</th>
+                        <th>Current Status</th>
+                      </tr>
+                    </thead>
+                    <tbody></tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-header">
+                  <div class="card-title">
+                    <i class="ti ti-radar"></i> Active Driver Working Status
+                  </div>
+                </div>
+                <div
+                  class="table-box"
+                  style="padding: 10px 0"
+                  id="dash-quick-driver-feed-list"
+                ></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="view-tab-content" id="view-loads">
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">
+                  <i class="ti ti-layers-intersect"></i> Master Load Dispatch
+                  Ledger Logs
+                </div>
+                <button
+                  class="btn btn-primary btn-sm"
+                  onclick="triggerModalVisibilityState('modal-add-load', true)"
+                >
+                  <i class="ti ti-plus"></i> Create Load Entry
+                </button>
+              </div>
+              <div class="table-box">
+                <table class="table-ui" id="master-loads-ledger-table-ui">
+                  <thead>
+                    <tr>
+                      <th>Load ID</th>
+                      <th>Assigned Driver</th>
+                      <th>Truck/Trailer ID</th>
+                      <th>Pickup Point</th>
+                      <th>Delivery Drop Point</th>
+                      <th>Total Load Price</th>
+                      <th>Status Label</th>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="view-tab-content" id="view-schedules">
+            <div class="card">
+              <div class="filter-row">
+                <span
+                  style="
+                    font-size: 12px;
+                    font-weight: 700;
+                    text-transform: uppercase;
+                    color: var(--text-tertiary);
+                    margin-right: 12px;
+                  "
+                  >Choose Schedule Time Filter:</span
+                >
+                <button
+                  class="filter-chip"
+                  onclick="applySchedulesTimeFilterChips('yesterday', this)"
+                >
+                  Yesterday
+                </button>
+                <button
+                  class="filter-chip active"
+                  onclick="applySchedulesTimeFilterChips('today', this)"
+                >
+                  Today's Active Schedules
+                </button>
+                <button
+                  class="filter-chip"
+                  onclick="applySchedulesTimeFilterChips('upcoming', this)"
+                >
+                  Upcoming Pipeline Loads
+                </button>
+              </div>
+              <div
+                class="schedule-list"
+                id="schedules-timeline-output-list"
+              ></div>
+            </div>
+          </div>
+
+          <div class="view-tab-content" id="view-gross">
+            <div class="metrics-grid">
+              <div
+                class="metric-card"
+                style="border-left: 4px solid var(--accent)"
+              >
+                <div class="metric-label">Gross Linehaul Income Aggregate</div>
+                <div class="metric-value" id="gross-calc-total-revenue-value">
+                  $0
+                </div>
+              </div>
+              <div
+                class="metric-card"
+                style="border-left: 4px solid var(--amber)"
+              >
+                <div class="metric-label">
+                  Estimated Standard Overhead Reductions
+                </div>
+                <div class="metric-value" id="gross-calc-overhead-base-value">
+                  $1,200
+                </div>
+              </div>
+              <div
+                class="metric-card"
+                style="
+                  border-left: 4px solid var(--green);
+                  background: var(--green-light);
+                "
+              >
+                <div class="metric-label" style="color: var(--green)">
+                  Net Profit Payout Margin Remaining
+                </div>
+                <div
+                  class="metric-value"
+                  id="gross-calc-net-retained-value"
+                  style="color: var(--green)"
+                >
+                  $0
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">
+                  <i class="ti ti-calculator-check"></i> Equipment Profit
+                  Allocation & Expenses Audit Log
+                </div>
+              </div>
+              <div class="table-box">
+                <table class="table-ui">
+                  <thead>
+                    <tr>
+                      <th>Trailer Truck Group Type</th>
+                      <th>Assigned Unit Tracker ID</th>
+                      <th>Total Gross Revenue</th>
+                      <th>Calculated Cost Base</th>
+                      <th>Resulting Yield Margin Payout</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><b>Dry Van Logistics Truck</b></td>
+                      <td><span class="badge badge-blue">Unit 102</span></td>
+                      <td>$2,450</td>
+                      <td>$650</td>
+                      <td style="color: var(--green); font-weight: 700">
+                        $1,800
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><b>Reefer Temperature Control Truck</b></td>
+                      <td><span class="badge badge-blue">Unit 103</span></td>
+                      <td>$1,490</td>
+                      <td>$400</td>
+                      <td style="color: var(--green); font-weight: 700">
+                        $1,090
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><b>Specialized Flatbed Rig</b></td>
+                      <td><span class="badge badge-blue">Unit 101</span></td>
+                      <td>$1,850</td>
+                      <td>$500</td>
+                      <td style="color: var(--green); font-weight: 700">
+                        $1,350
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="view-tab-content" id="view-rpm">
+            <div class="calc-container-box">
+              <h4
+                style="
+                  margin-bottom: 6px;
+                  color: var(--accent);
+                  font-weight: 700;
+                "
+              >
+                <i class="ti ti-calculator"></i> Rate Per Mile Fee Diagnostic
+                Calculator Playground
+              </h4>
+              <p
+                style="
+                  font-size: 12px;
+                  color: var(--text-secondary);
+                  margin-bottom: 14px;
+                "
+              >
+                Simulate deadhead miles drag during broker pitch sessions to
+                demonstrate how layout price modifications directly optimize
+                revenue performance floor levels.
+              </p>
+              <div class="calc-flex-row">
+                <div class="input-group">
+                  <label>Total Combined Load Price ($)</label>
+                  <input
+                    type="number"
+                    class="form-input"
+                    id="calc-rpm-field-money"
+                    value="1200"
+                    oninput="runLiveRpmPlaygroundCalculations()"
+                    style="width: 140px"
+                  />
+                </div>
+                <div class="input-group">
+                  <label>Loaded Distance (Miles)</label>
+                  <input
+                    type="number"
+                    class="form-input"
+                    id="calc-rpm-field-loaded"
+                    value="450"
+                    oninput="runLiveRpmPlaygroundCalculations()"
+                    style="width: 120px"
+                  />
+                </div>
+                <div class="input-group">
+                  <label>Empty Unloaded Deadhead (Miles)</label>
+                  <input
+                    type="number"
+                    class="form-input"
+                    id="calc-rpm-field-deadhead"
+                    value="80"
+                    oninput="runLiveRpmPlaygroundCalculations()"
+                    style="width: 120px"
+                  />
+                </div>
+                <div style="margin-left: auto; text-align: right">
+                  <div
+                    style="
+                      font-size: 11px;
+                      font-weight: 700;
+                      text-transform: uppercase;
+                      color: var(--text-tertiary);
+                    "
+                  >
+                    Calculated Rate Per Mile Floor Payout
+                  </div>
+                  <div
+                    style="
+                      font-size: 24px;
+                      font-weight: 700;
+                      color: var(--text-primary);
+                    "
+                    id="calc-rpm-field-output-payout"
+                  >
+                    $2.26 / mi
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">
+                  <i class="ti ti-chart-bar-popular"></i> Historical Load
+                  Performance & Empty Mileage Optimization Log
+                </div>
+              </div>
+              <div class="table-box">
+                <table class="table-ui" id="rpm-historical-eval-logs-table">
+                  <thead>
+                    <tr>
+                      <th>Load ID</th>
+                      <th>Loaded Driving Miles</th>
+                      <th>Empty Deadhead Miles</th>
+                      <th>Total Payout Amount</th>
+                      <th>Loaded Only Rate Per Mile</th>
+                      <th>True Combined Rate Per Mile Payout</th>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="view-tab-content" id="view-equipment">
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">
+                  <i class="ti ti-subtask"></i> Commercial Vehicles Fleet
+                  Equipment Registry
+                </div>
+                <button
+                  class="btn btn-primary btn-sm"
+                  onclick="
+                    triggerModalVisibilityState('modal-add-equipment', true)
+                  "
+                >
+                  <i class="ti ti-plus"></i> Register New Equipment Truck
+                </button>
+              </div>
+              <div class="table-box">
+                <table class="table-ui" id="equipment-registry-master-table">
+                  <thead>
+                    <tr>
+                      <th>Truck/Trailer ID</th>
+                      <th>Trailer Form Body Style</th>
+                      <th>Classification Category</th>
+                      <th>License Plate Number</th>
+                      <th>Assigned Driver Operator</th>
+                      <th>Active Fleet Status</th>
+                      <th>Safety Inspection Expiry Window</th>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="view-tab-content" id="view-drivers">
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">
+                  <i class="ti ti-users-group"></i> Certified Active
+                  Professional Commercial Drivers
+                </div>
+              </div>
+              <div class="table-box">
+                <table class="table-ui" id="drivers-registry-master-table">
+                  <thead>
+                    <tr>
+                      <th>Driver Identity Profile</th>
+                      <th>Current Duty Performance Status</th>
+                      <th>Assigned Truck Chassis Equipment</th>
+                      <th>
+                        Logbook Electronic Logging Device (ELD) Rest Clock
+                        Remaining
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="view-tab-content" id="view-documents">
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">
+                  <i class="ti ti-archive"></i> Universal Document Cloud Storage
+                  Vault Library
+                </div>
+                <select
+                  class="form-input"
+                  id="documents-filter-select-dropdown-element"
+                  onchange="runSelectiveDocumentLibraryFiltering(this.value)"
+                  style="height: 32px; padding: 0 8px; border-radius: 6px"
+                >
+                  <option value="all">Display All Vault Records</option>
+                  <option value="pod">
+                    Proof Of Delivery (POD) Forms Only
+                  </option>
+                  <option value="bol">
+                    Bills Of Lading (BOL) Manifest Forms Only
+                  </option>
+                  <option value="rate_conf">
+                    Broker Rate Confirmation Records Only
+                  </option>
+                </select>
+              </div>
+              <div class="table-box">
+                <table
+                  class="table-ui"
+                  id="master-documents-library-vault-table"
+                >
+                  <thead>
+                    <tr>
+                      <th>Document Reference ID</th>
+                      <th>Document Type</th>
+                      <th>Associated Load Manifest</th>
+                      <th>Signatory Driver Profile</th>
+                      <th>Ingestion Log Date</th>
+                      <th>Safety Ingestion Audit Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr data-docgroup="pod">
+                      <td><span class="badge badge-purple">DOC-44812</span></td>
+                      <td>Proof of Delivery (POD)</td>
+                      <td>LD-0041</td>
+                      <td>J. Martinez</td>
+                      <td>May 31, 2026</td>
+                      <td>
+                        <span class="badge badge-green"
+                          >Audited & Verified Clean</span
+                        >
+                      </td>
+                    </tr>
+                    <tr data-docgroup="bol">
+                      <td><span class="badge badge-purple">DOC-99210</span></td>
+                      <td>Bill of Lading (BOL)</td>
+                      <td>LD-0042</td>
+                      <td>R. Thompson</td>
+                      <td>May 30, 2026</td>
+                      <td>
+                        <span class="badge badge-green"
+                          >Audited & Verified Clean</span
+                        >
+                      </td>
+                    </tr>
+                    <tr data-docgroup="pod">
+                      <td><span class="badge badge-purple">DOC-38112</span></td>
+                      <td>Proof of Delivery (POD)</td>
+                      <td>LD-0043</td>
+                      <td>A. Patel</td>
+                      <td>May 28, 2026</td>
+                      <td>
+                        <span class="badge badge-green"
+                          >Audited & Verified Clean</span
+                        >
+                      </td>
+                    </tr>
+                    <tr data-docgroup="rate_conf">
+                      <td><span class="badge badge-purple">DOC-11048</span></td>
+                      <td>Rate Confirmation</td>
+                      <td>LD-0045</td>
+                      <td>K. Brown</td>
+                      <td>May 24, 2026</td>
+                      <td>
+                        <span class="badge badge-amber"
+                          >Awaiting Audit Verification</span
+                        >
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="view-tab-content" id="view-maintenance">
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">
+                  <i class="ti ti-adjustments-wrench"></i> Vehicles Safety
+                  Maintenance & Repair Work Logs
+                </div>
+                <button
+                  class="btn btn-primary btn-sm"
+                  onclick="triggerModalVisibilityState('modal-add-maint', true)"
+                >
+                  <i class="ti ti-plus"></i> Create Repair Record Entry
+                </button>
+              </div>
+              <div class="table-box">
+                <table class="table-ui" id="maintenance-registry-master-table">
+                  <thead>
+                    <tr>
+                      <th>Target Truck/Trailer ID</th>
+                      <th>Repair Service Performance Type Description</th>
+                      <th>Assigned Mechanical Shop Facility Vendor</th>
+                      <th>Repair Invoiced Cost</th>
+                      <th>Logged Maintenance Date</th>
+                      <th>Safety Mechanical Release Flag</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><b>Unit 104</b></td>
+                      <td>Brake Pad Swapping & System Calibration Checkup</td>
+                      <td>Phoenix Premium Fleet Maintenance Shop Garage</td>
+                      <td>$1,250</td>
+                      <td>May 28, 2026</td>
+                      <td>
+                        <span class="badge badge-amber"
+                          >Active Work In-Progress</span
+                        >
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><b>T-001</b></td>
+                      <td>
+                        Preventative Maintenance Level 1 Checkup (Oil & Fluids
+                        Change)
+                      </td>
+                      <td>Speedy Fleet Semi Truck Lube Express Center</td>
+                      <td>$450</td>
+                      <td>May 12, 2026</td>
+                      <td>
+                        <span class="badge badge-green"
+                          >Completed & Vehicle Released</span
+                        >
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="view-tab-content" id="view-messages">
+            <div class="chat-shell">
+              <div class="chat-user-list">
+                <div class="chat-user-row active">
+                  <div
+                    style="
+                      font-weight: 700;
+                      font-size: 13px;
+                      color: var(--text-primary);
+                    "
+                  >
+                    J. Martinez
+                  </div>
+                  <div
+                    style="
+                      font-size: 11px;
+                      color: var(--text-tertiary);
+                      text-overflow: ellipsis;
+                      overflow: hidden;
+                      white-space: nowrap;
+                    "
+                  >
+                    Detention compensation claim request authorization window...
+                  </div>
+                </div>
+                <div class="chat-user-row">
+                  <div
+                    style="
+                      font-weight: 700;
+                      font-size: 13px;
+                      color: var(--text-primary);
+                    "
+                  >
+                    A. Patel
+                  </div>
+                  <div style="font-size: 11px; color: var(--text-tertiary)">
+                    Load bound secured down safely. Rolling outward now.
+                  </div>
+                </div>
+              </div>
+              <div class="chat-message-window">
+                <div class="chat-stream">
+                  <div class="chat-bubble inbound">
+                    Hey dispatch, I have been backed completely up onto this
+                    shipper terminal warehouse dock terminal door for going on
+                    2.5 hours past slot time window out here. Can we start
+                    charging detention fees to this broker?
+                  </div>
+                  <div class="chat-bubble outbound">
+                    Copy that J. Timestamp metrics logged inside our framework
+                    database profile tracker layer. Remain on duty on clock.
+                    Sending direct notice to the load broker broker office
+                    pipeline immediately.
+                  </div>
+                </div>
+                <div class="chat-input-bar">
+                  <input
+                    type="text"
+                    placeholder="Type outgoing response text message stream entry here..."
+                    style="
+                      flex: 1;
+                      border: 1px solid var(--border);
+                      border-radius: 6px;
+                      padding: 0 12px;
+                      font-size: 13px;
+                    "
+                  />
+                  <button class="btn btn-primary btn-sm">Send</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="view-tab-content" id="view-accounts">
+            <div
+              style="
+                display: flex;
+                justify-content: between;
+                align-items: center;
+                margin-bottom: 16px;
+                gap: 10px;
+                flex-wrap: wrap;
+              "
+            >
+              <div
+                style="
+                  font-size: 12px;
+                  color: var(--text-tertiary);
+                  font-weight: 500;
+                "
+              >
+                Manage individual access profiles, active software permission
+                clearances, and security verification logs here.
+              </div>
+              <div style="display: flex; gap: 8px; margin-left: auto">
+                <button
+                  class="btn btn-secondary btn-sm"
+                  onclick="configureInviteTeamMemberFormScope('dispatcher')"
+                >
+                  <i class="ti ti-user-plus"></i> Invite Desktop Dispatcher
+                </button>
+                <button
+                  class="btn btn-primary btn-sm"
+                  onclick="configureInviteTeamMemberFormScope('driver')"
+                >
+                  <i class="ti ti-steering-wheel"></i> Invite Commercial Driver
+                </button>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="table-box">
+                <table
+                  class="table-ui"
+                  id="accounts-permissions-registry-master-table"
+                >
+                  <thead>
+                    <tr>
+                      <th>Account Team Member Profile Name</th>
+                      <th>Operational Software Role Authorization Group</th>
+                      <th>Registered Login Handle Connection Email</th>
+                      <th>Account Ingestion Date</th>
+                      <th>Primary Verified Sync Node Device Profile</th>
+                      <th>Live Access Switch Account Block Control</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <div class="user-info-row">
+                          <div class="avatar avatar-b">OW</div>
+                          <div>
+                            <div class="user-name-title">Omar Waheed</div>
+                            <div class="user-sub-title">
+                              Fleet Corporate Admin
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td>
+                        <span
+                          class="badge badge-purple"
+                          style="font-size: 10px; text-transform: uppercase"
+                          >Workspace Corporate Owner</span
+                        >
+                      </td>
+                      <td style="font-size: 12px">omar@acmetrucking.com</td>
+                      <td>Jan 04, 2026</td>
+                      <td>
+                        <span class="badge badge-green"
+                          >Desktop Web Portal Root Link</span
+                        >
+                      </td>
+                      <td>
+                        <label class="toggle-element">
+                          <input type="checkbox" checked disabled />
+                          <span class="toggle-background"></span>
+                        </label>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <div class="user-info-row">
+                          <div class="avatar avatar-p">SR</div>
+                          <div>
+                            <div class="user-name-title">Sara Reyes</div>
+                            <div class="user-sub-title">
+                              Logistics Desks Manager Staff
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td>
+                        <span
+                          class="badge badge-blue"
+                          style="font-size: 10px; text-transform: uppercase"
+                          >Logistics Dispatcher Staff</span
+                        >
+                      </td>
+                      <td style="font-size: 12px">sara@acmetrucking.com</td>
+                      <td>Feb 19, 2026</td>
+                      <td>
+                        <span class="badge badge-green"
+                          >Desktop Web Portal Core Link</span
+                        >
+                      </td>
+                      <td>
+                        <label class="toggle-element">
+                          <input type="checkbox" checked />
+                          <span class="toggle-background"></span>
+                        </label>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <div class="user-info-row">
+                          <div class="avatar avatar-a">JM</div>
+                          <div>
+                            <div class="user-name-title">Juan Martinez</div>
+                            <div class="user-sub-title">
+                              Commercial Vehicle Operator
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td>
+                        <span
+                          class="badge badge-amber"
+                          style="font-size: 10px; text-transform: uppercase"
+                          >Commercial Driver Operator</span
+                        >
+                      </td>
+                      <td style="font-size: 12px">j.martinez@fleetops.net</td>
+                      <td>Mar 11, 2026</td>
+                      <td>
+                        <span class="badge badge-purple"
+                          >Driver Mobile Synchronization Engine</span
+                        >
+                      </td>
+                      <td>
+                        <label class="toggle-element">
+                          <input type="checkbox" checked />
+                          <span class="toggle-background"></span>
+                        </label>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="view-tab-content" id="view-settings">
+            <div class="card" style="padding: 24px">
+              <h3 style="margin-bottom: 16px; font-weight: 700">
+                <i class="ti ti-settings-automation"></i> Settings &
+                Configurations Control Panel
+              </h3>
+              <div class="fields-2-col" style="max-width: 750px; gap: 20px">
+                <div class="input-group">
+                  <label>Registered Carrier Company Legal Name</label
+                  ><input
+                    type="text"
+                    class="form-input"
+                    value="Acme Trucking Logistics LLC"
+                  />
+                </div>
+                <div class="input-group">
+                  <label>National DOT Security Registry Number</label
+                  ><input
+                    type="text"
+                    class="form-input"
+                    value="USDOT-3891022-TX"
+                  />
+                </div>
+                <div class="input-group">
+                  <label
+                    >Primary Fleet Electronic Logbook Hardware API Link</label
+                  ><select class="form-input">
+                    <option>Samsara Fleet Cloud API Link Interface</option>
+                    <option>Motive / KeepTruckin Developer Link API</option>
+                    <option>
+                      Verizon Connect Hardware Nodes System Network
+                    </option>
+                  </select>
+                </div>
+                <div class="input-group">
+                  <label
+                    >Load Broker Invoicing Automated Delivery Protocol</label
+                  ><select class="form-input">
+                    <option>
+                      Send Automated Email Instantly Upon Delivery Release Check
+                    </option>
+                    <option>
+                      Hold Inbound Documents For Manual Dispatch Desk Audit
+                      Verification Approval
+                    </option>
+                  </select>
+                </div>
+                <div class="input-group">
+                  <label>Default Corporate Currency Framework</label
+                  ><input
+                    type="text"
+                    class="form-input"
+                    value="United States Dollar ($)"
+                    disabled
+                    style="background: var(--bg)"
+                  />
+                </div>
+                <div class="input-group">
+                  <label>Geofence Arrival Range Radius Limit (Feet)</label
+                  ><input type="number" class="form-input" value="500" />
+                </div>
+              </div>
+              <button
+                class="btn btn-primary"
+                style="margin-top: 20px"
+                onclick="
+                  alert(
+                    'Settings parameters committed successfully into validation sandbox session framework data index registry profiles.',
+                  )
+                "
+              >
+                <i class="ti ti-device-floppy"></i> Commit Saved Preferences
+                Configuration
+              </button>
+            </div>
+          </div>
+
+          <div class="view-tab-content" id="view-myaccount">
+            <div class="card" style="padding: 24px">
+              <div
+                style="
+                  display: flex;
+                  justify-content: between;
+                  align-items: center;
+                  flex-wrap: wrap;
+                  gap: 16px;
+                  margin-bottom: 24px;
+                  border-bottom: 1px solid var(--border-soft);
+                  padding-bottom: 16px;
+                "
+              >
+                <div style="flex: 1">
+                  <h3 style="font-weight: 700; font-size: 18px">
+                    Workspace Cloud Account Core Specifications Overview
+                  </h3>
+                  <p style="font-size: 12px; color: var(--text-tertiary)">
+                    Active infrastructure operational metrics profile overview
+                    data logs tracker mapping snapshot.
+                  </p>
+                </div>
+                <span
+                  class="badge badge-purple"
+                  style="font-size: 13px; padding: 6px 14px"
+                  id="my-account-plan-tier-indicator-badge"
+                  >Allocated Scope Plan: Growth Team Framework Tier</span
+                >
+              </div>
+
+              <div
+                style="
+                  background: var(--bg);
+                  border: 1px solid var(--border);
+                  border-radius: var(--radius-xl);
+                  padding: 20px;
+                  margin-bottom: 24px;
+                "
+              >
+                <h4
+                  style="
+                    color: var(--accent);
+                    margin-bottom: 6px;
+                    font-weight: 700;
+                  "
+                >
+                  <i class="ti ti-calculator"></i> Active Interactive Platform
+                  Pitch Billing Footprint Prototyper Calculator
+                </h4>
+                <p
+                  style="
+                    font-size: 12px;
+                    color: var(--text-secondary);
+                    margin-bottom: 16px;
+                  "
+                >
+                  Interact with this pricing slider simulation model during
+                  pitch sessions with trucking carrier owners to visually
+                  demonstrate subscription customization bounds relative to
+                  their target team scaling metrics parameters.
+                </p>
+
+                <div class="calc-flex-row">
+                  <div class="input-group">
+                    <label
+                      >Target Operational SaaS Plan Allocation Category</label
+                    >
+                    <select
+                      id="saas-pricing-tier-dropdown"
+                      class="form-input"
+                      onchange="runSaaSPricingPrototyperInferenceMath()"
+                      style="width: 260px"
+                    >
+                      <option value="starter">
+                        Starter Setup Option Tier ($49/month Base Fee)
+                      </option>
+                      <option value="growth" selected>
+                        Growth Operations Option Tier ($99/month Base Fee)
+                      </option>
+                      <option value="enterprise">
+                        Enterprise Scaled Infrastructure Tier ($199/month Base
+                        Fee)
+                      </option>
+                    </select>
+                  </div>
+                  <div class="input-group">
+                    <label>Active Drivers Allocated Seats Pool</label>
+                    <input
+                      type="number"
+                      id="saas-pricing-driver-counter"
+                      class="form-input"
+                      value="5"
+                      min="1"
+                      max="250"
+                      oninput="runSaaSPricingPrototyperInferenceMath()"
+                      style="width: 90px"
+                    />
+                  </div>
+                  <div style="margin-left: auto; text-align: right">
+                    <div
+                      style="
+                        font-size: 11px;
+                        font-weight: 700;
+                        text-transform: uppercase;
+                        color: var(--text-tertiary);
+                      "
+                    >
+                      Projected Monthly Subscription Valuation Total
+                    </div>
+                    <div
+                      id="saas-pricing-payout-text-output"
+                      style="
+                        font-size: 26px;
+                        font-weight: 800;
+                        color: var(--text-primary);
+                      "
+                    >
+                      $159 / mo
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <h4 style="margin: 20px 0 12px; font-weight: 700">
+                Infrastructure Capacity & Corporate Identity Validation Registry
+                Profiles
+              </h4>
+              <div class="fields-2-col" style="gap: 16px">
+                <div
+                  style="
+                    border: 1px solid var(--border-soft);
+                    border-radius: 8px;
+                    padding: 14px;
+                    background: white;
+                  "
+                >
+                  <div
+                    style="
+                      font-size: 11px;
+                      font-weight: 700;
+                      color: var(--text-tertiary);
+                      text-transform: uppercase;
+                    "
+                  >
+                    Carrier Profile Identification Records
+                  </div>
+                  <div
+                    style="
+                      font-size: 14px;
+                      font-weight: 600;
+                      color: var(--text-primary);
+                      margin-top: 4px;
+                    "
+                  >
+                    Acme Trucking Core Logistics LLC
+                  </div>
+                  <div
+                    style="
+                      font-size: 12px;
+                      color: var(--text-secondary);
+                      margin-top: 2px;
+                    "
+                  >
+                    Primary Base Maintenance Terminal Point Station: Dallas /
+                    Fort Worth Hub Terminal
+                  </div>
+                </div>
+                <div
+                  style="
+                    border: 1px solid var(--border-soft);
+                    border-radius: 8px;
+                    padding: 14px;
+                    background: white;
+                  "
+                >
+                  <div
+                    style="
+                      font-size: 11px;
+                      font-weight: 700;
+                      color: var(--text-tertiary);
+                      text-transform: uppercase;
+                    "
+                  >
+                    Provisioned Hardware Tracker Matrix Summary Allocation
+                  </div>
+                  <div
+                    style="
+                      font-size: 14px;
+                      font-weight: 600;
+                      color: var(--text-primary);
+                      margin-top: 4px;
+                    "
+                  >
+                    Active Power Semi Trucks: 5 Units | Active Container Chassis
+                    Trailers: 4 Units
+                  </div>
+                  <div
+                    style="
+                      font-size: 12px;
+                      color: var(--text-secondary);
+                      margin-top: 2px;
+                    "
+                  >
+                    ELD Engine Integration Link: Fully Active Cloud Server
+                    Handshake Synchronization
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <div class="modal-backdrop" id="modal-add-load">
+      <div class="modal-content-window">
+        <div class="modal-top-bar">
+          <h3>Create New Load Entry & Dispatch Manifest</h3>
+          <button
+            onclick="triggerModalVisibilityState('modal-add-load', false)"
+            style="font-size: 22px; line-height: 1"
+          >
+            &times;
+          </button>
+        </div>
+        <div class="modal-body-form">
+          <div>
+            <div class="form-section-header">
+              Route Location & Driver Allocation Metadata Parameters
+            </div>
+            <div class="fields-2-col">
+              <div class="input-group">
+                <label>Target Operator Driver Name</label>
+                <select class="form-input" id="form-load-input-driver"></select>
+              </div>
+              <div class="input-group">
+                <label>Assigned Truck/Trailer Body ID</label>
+                <select
+                  class="form-input"
+                  id="form-load-input-equipment"
+                ></select>
+              </div>
+            </div>
+            <div class="fields-2-col">
+              <div class="input-group">
+                <label>Pickup Point (Origin)</label
+                ><input
+                  type="text"
+                  class="form-input"
+                  id="form-load-input-origin"
+                />
+              </div>
+              <div class="input-group">
+                <label>Pickup Date</label
+                ><input type="datetime-local" class="form-input" />
+              </div>
+              <div class="input-group">
+                <label>Pickup Address</label
+                ><input type="text" class="form-input" />
+              </div>
+              <br />
+              <div class="input-group">
+                <label>Delivery Drop Point (Destination)</label
+                ><input
+                  type="text"
+                  class="form-input"
+                  id="form-load-input-dest"
+                />
+              </div>
+              <div class="input-group">
+                <label>Delivery Date</label
+                ><input type="datetime-local" class="form-input" />
+              </div>
+              <div class="input-group">
+                <label>DElivery Address</label
+                ><input type="text" class="form-input" />
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div class="form-section-header">
+              Pricing & Financial Breakdown Structure Metrics
+            </div>
+            <div class="fields-3-col">
+              <div class="input-group">
+                <label>Gross Linehaul Base Pay ($)</label
+                ><input
+                  type="number"
+                  class="form-input"
+                  id="form-load-input-rate-linehaul"
+                  value="850"
+                />
+              </div>
+              <div class="input-group">
+                <label>Fuel Surcharge Fee ($)</label
+                ><input
+                  type="number"
+                  class="form-input"
+                  id="form-load-input-rate-fuel"
+                  value="70"
+                />
+              </div>
+              <div class="input-group">
+                <label>Accessorial Extra Fees ($)</label
+                ><input
+                  type="number"
+                  class="form-input"
+                  id="form-load-input-rate-extra"
+                  value="30"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div class="form-section-header">
+              Operations Execution Workflow Status Flags
+            </div>
+            <div class="input-group">
+              <label>Current Routing Execution Phase State Status</label>
+              <select class="form-input" id="form-load-input-status">
+                <option value="In transit">
+                  En Route (Active Driver Driving In Transit Phase State)
+                </option>
+                <option value="Loading">Loading</option>
+                <option value="Dispatched">Dispatched</option>
+                <option value="Delivered">
+                  Completed (Released Delivery Receipt Form Ingested Today)
+                </option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="modal-bottom-bar">
+          <button
+            class="btn btn-secondary"
+            onclick="triggerModalVisibilityState('modal-add-load', false)"
+          >
+            Cancel
+          </button>
+          <button
+            class="btn btn-primary"
+            onclick="executeLoadManifestFormSubmissionRegistryInjection()"
+          >
+            Inject Load Entry
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-backdrop" id="modal-add-equipment">
+      <div class="modal-content-window">
+        <div class="modal-top-bar">
+          <h3>Register & Provision New Vehicle Capacity Chassis Equipment</h3>
+          <button
+            onclick="triggerModalVisibilityState('modal-add-equipment', false)"
+            style="font-size: 22px; line-height: 1"
+          >
+            &times;
+          </button>
+        </div>
+        <div class="modal-body-form">
+          <div class="fields-2-col">
+            <div class="input-group">
+              <label>Truck/Trailer Hardware Identification ID Token</label
+              ><input
+                type="text"
+                class="form-input"
+                id="form-eq-id-field"
+                value="Unit 106"
+              />
+            </div>
+            <div class="input-group">
+              <label>Trailer Form Body Style Specification Category</label
+              ><input
+                type="text"
+                class="form-input"
+                id="form-eq-type-field"
+                value="53ft Temperature Controlled Reefer Box Chassis"
+              />
+            </div>
+          </div>
+          <div class="fields-2-col">
+            <div class="input-group">
+              <label>Classification Category Allocation Group</label>
+              <select class="form-input" id="form-eq-cat-field">
+                <option value="Trailer">Chassis Trailer Freight Asset</option>
+                <option value="Truck">
+                  Power Tractor Truck Cab Unit Asset
+                </option>
+              </select>
+            </div>
+            <div class="input-group">
+              <label
+                >State Commercial Vehicle License Registration Plate
+                Number</label
+              ><input
+                type="text"
+                class="form-input"
+                id="form-eq-plate-field"
+                value="TX-9902-DX"
+              />
+            </div>
+          </div>
+          <div class="input-group">
+            <label>Primary Assigned Operator Driver Profile Name</label>
+            <select
+              class="form-input"
+              id="form-eq-driver-assign-select-field"
+            ></select>
+          </div>
+        </div>
+        <div class="modal-bottom-bar">
+          <button
+            class="btn btn-secondary"
+            onclick="triggerModalVisibilityState('modal-add-equipment', false)"
+          >
+            Cancel
+          </button>
+          <button
+            class="btn btn-primary"
+            onclick="executeFleetEquipmentAssetFormSubmissionInjection()"
+          >
+            Register Capacity Vehicle Asset
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-backdrop" id="modal-add-maint">
+      <div class="modal-content-window">
+        <div class="modal-top-bar">
+          <h3>Log Asset Service Repair Work Order Maintenance Record</h3>
+          <button
+            onclick="triggerModalVisibilityState('modal-add-maint', false)"
+            style="font-size: 22px; line-height: 1"
+          >
+            &times;
+          </button>
+        </div>
+        <div class="modal-body-form">
+          <div class="form-section-header">
+            Vehicle Specs Identification Parameters
+          </div>
+          <div class="fields-2-col">
+            <div class="input-group">
+              <label>Target Truck/Trailer ID</label
+              ><input
+                type="text"
+                class="form-input"
+                id="form-maint-unit-field"
+                value="Unit 102"
+              />
+            </div>
+            <div class="input-group">
+              <label>Repair Performance Category Description</label
+              ><input
+                type="text"
+                class="form-input"
+                id="form-maint-type-field"
+                value="Annual Safety Structural System Checkup Inspection"
+              />
+            </div>
+          </div>
+
+          <div class="form-section-header">
+            Vendor Repair Station Workshop Details
+          </div>
+          <div class="fields-2-col">
+            <div class="input-group">
+              <label>Assigned Mechanical Facility Vendor Name</label
+              ><input
+                type="text"
+                class="form-input"
+                id="form-maint-vendor-field"
+                value="Dallas Fleet Mechanical Maintenance Hub Shop"
+              />
+            </div>
+            <div class="input-group">
+              <label>Total Projected Invoiced Base Repair Cost ($)</label
+              ><input
+                type="number"
+                class="form-input"
+                id="form-maint-cost-field"
+                value="380"
+              />
+            </div>
+          </div>
+
+          <div class="form-section-header">
+            Safety Operational Dispatch Hold Status Group
+          </div>
+          <div class="input-group">
+            <label
+              >Mechanical Verification Performance Clearance Flag Status</label
+            >
+            <select class="form-input" id="form-maint-status-select-field">
+              <option value="Active Work In-Progress">
+                Active Maintenance Status Hold (Vehicle Root Locked Down Out of
+                Dispatch Loop)
+              </option>
+              <option value="Completed & Vehicle Released">
+                Completed Safety Verification Check. Release Asset and Driver
+                Outward.
+              </option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-bottom-bar">
+          <button
+            class="btn btn-secondary"
+            onclick="triggerModalVisibilityState('modal-add-maint', false)"
+          >
+            Cancel
+          </button>
+          <button
+            class="btn btn-primary"
+            onclick="executeMaintenanceLogEntryFormSubmissionInjection()"
+          >
+            Commit Log Entry Record
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-backdrop" id="modal-add-team-member">
+      <div class="modal-content-window">
+        <div class="modal-top-bar">
+          <h3 id="team-member-invite-form-window-header-title-element">
+            Invite Staff Access Profile Credentials
+          </h3>
+          <button
+            onclick="
+              triggerModalVisibilityState('modal-add-team-member', false)
+            "
+            style="font-size: 22px; line-height: 1"
+          >
+            &times;
+          </button>
+        </div>
+        <div class="modal-body-form">
+          <div class="fields-2-col">
+            <div class="input-group">
+              <label>Legal First & Last Identification Profile Name</label
+              ><input
+                type="text"
+                class="form-input"
+                id="form-invite-name-field"
+                value="Alex Mercer"
+              />
+            </div>
+            <div class="input-group">
+              <label
+                >Target Workspace Role Clearance Group Profile Authorization
+                Level</label
+              >
+              <input
+                type="text"
+                class="form-input"
+                id="form-invite-role-readonly-field"
+                value="Driver"
+                readonly
+                style="background: var(--bg); font-weight: 700"
+              />
+            </div>
+          </div>
+          <div class="input-group">
+            <label
+              >Target Communication Connection Contact Email Address
+              Handle</label
+            ><input
+              type="email"
+              class="form-input"
+              id="form-invite-email-field"
+              value="alex.m@fleetops.net"
+            />
+          </div>
+        </div>
+        <div class="modal-bottom-bar">
+          <button
+            class="btn btn-secondary"
+            onclick="
+              triggerModalVisibilityState('modal-add-team-member', false)
+            "
+          >
+            Cancel
+          </button>
+          <button
+            class="btn btn-primary"
+            onclick="
+              executeTeamMemberAccessProvisionInvitationWorkflowInjection()
+            "
+          >
+            Issue Secure Credentials Link Invite
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let coreAppDatabaseCache = {
+        loads: [
+          {
+            id: "LD-0041",
+            driver: "J. Martinez",
+            avatar: "avatar-b",
+            initial: "JM",
+            equipment: "48ft Flatbed Truck",
+            origin: "Chicago, IL",
+            dest: "Detroit, MI",
+            rate: 680,
+            status: "In transit",
+            time: "07:00 AM",
+            loadedMi: 284,
+            deadheadMi: 48,
+            timelineWindow: "today",
+          },
+          {
+            id: "LD-0042",
+            driver: "R. Thompson",
+            avatar: "avatar-g",
+            initial: "RT",
+            equipment: "Standard Dry Van",
+            origin: "Houston, TX",
+            dest: "Dallas, TX",
+            rate: 578,
+            status: "Delivered",
+            time: "11:15 AM",
+            loadedMi: 241,
+            deadheadMi: 31,
+            timelineWindow: "yesterday",
+          },
+          {
+            id: "LD-0043",
+            driver: "A. Patel",
+            avatar: "avatar-p",
+            initial: "AP",
+            equipment: "Specialized Reefer",
+            origin: "Miami, FL",
+            dest: "Atlanta, GA",
+            rate: 1490,
+            status: "Loading",
+            time: "09:30 AM",
+            loadedMi: 662,
+            deadheadMi: 120,
+            timelineWindow: "today",
+          },
+          {
+            id: "LD-0044",
+            driver: "S. Wilson",
+            avatar: "avatar-a",
+            initial: "SW",
+            equipment: "Heavy Step Deck",
+            origin: "Phoenix, AZ",
+            dest: "Los Angeles, CA",
+            rate: 900,
+            status: "In transit",
+            time: "03:45 PM",
+            loadedMi: 370,
+            deadheadMi: 55,
+            timelineWindow: "upcoming",
+          },
+          {
+            id: "LD-0045",
+            driver: "K. Brown",
+            avatar: "avatar-b",
+            initial: "KB",
+            equipment: "Standard Dry Van",
+            origin: "Seattle, WA",
+            dest: "Portland, OR",
+            rate: 856,
+            status: "Dispatched",
+            time: "01:00 PM",
+            loadedMi: 174,
+            deadheadMi: 22,
+            timelineWindow: "upcoming",
+          },
+        ],
+        equipment: [
+          {
+            id: "Unit 101",
+            type: "48ft Flatbed Rig Truck",
+            cat: "Trailer",
+            plate: "TX-4821-X",
+            driver: "J. Martinez",
+            av: "avatar-b",
+            init: "JM",
+            status: "Active",
+            due: "Dec 12, 2026",
+          },
+          {
+            id: "Unit 102",
+            type: "Dry Van Logistics Carrier",
+            cat: "Trailer",
+            plate: "TX-3302-A",
+            driver: "R. Thompson",
+            av: "avatar-g",
+            init: "RT",
+            status: "Active",
+            due: "Jan 08, 2027",
+          },
+          {
+            id: "Unit 103",
+            type: "Reefer Temperature Box Box",
+            cat: "Trailer",
+            plate: "TX-7741-R",
+            driver: "A. Patel",
+            av: "avatar-p",
+            init: "AP",
+            status: "Active",
+            due: "Nov 30, 2026",
+          },
+          {
+            id: "Unit 104",
+            type: "Step Deck Heavy Rig Carrier",
+            cat: "Trailer",
+            plate: "TX-5519-S",
+            driver: "S. Wilson",
+            av: "avatar-a",
+            init: "SW",
+            status: "Maintenance",
+            due: "Overdue Structural Check",
+          },
+          {
+            id: "T-001",
+            type: "Semi Tractor Cab Power Power Unit",
+            cat: "Truck",
+            plate: "TX-1104-P",
+            driver: "K. Brown",
+            av: "avatar-b",
+            init: "KB",
+            status: "Active",
+            due: "Feb 14, 2027",
+          },
+        ],
+        drivers: [
+          {
+            name: "J. Martinez",
+            initial: "JM",
+            style: "avatar-b",
+            status: "online",
+            statusText: "LD-0041 · Chicago → Detroit",
+            hos: "6.5 Hours Left",
+            trailer: "Unit 101",
+          },
+          {
+            name: "R. Thompson",
+            initial: "RT",
+            style: "avatar-g",
+            status: "offline",
+            statusText: "Completed Duty Manifest · Off Clock Rest Window",
+            hos: "11.0 Hours Full Reset",
+            trailer: "Unit 102",
+          },
+          {
+            name: "A. Patel",
+            initial: "AP",
+            style: "avatar-p",
+            status: "online",
+            statusText: "LD-0043 · Chicago Dock Warehouse Loading Area",
+            hos: "9.2 Hours Left",
+            trailer: "Unit 103",
+          },
+          {
+            name: "K. Brown",
+            initial: "KB",
+            style: "avatar-b",
+            status: "idle",
+            statusText: "LD-0045 · Pre-Route Fleet Inspection Phase State",
+            hos: "3.0 Hours Left",
+            trailer: "T-001",
+          },
+        ],
+      };
+
+      const routingUIWindowLabelMapLookupMatrix = {
+        dashboard: "Dashboard Summary",
+        loads: "Active Manifests Load Dispatch Ledger Logs",
+        gross: "Total Gross Profit & Overhead Audit Logs",
+        schedules: "Vehicles Operations Master Schedules Timeline",
+        rpm: "Broker Rate Per Mile Payout Analytical Diagnostics Engine",
+        equipment: "Commercial Vehicles Fleet Equipment Registry",
+        drivers: "Certified Active Professional Commercial Drivers Directory",
+        documents:
+          "Universal Document Cloud Storage Vault Library Overview Page",
+        maintenance: "Vehicles Safety Maintenance & Repair Work Logs",
+        messages: "Secure Chat Comms Terminal Desks Desk Workspace",
+        accounts:
+          "Accounts & Access Security Permissions Registry Profile Matrix",
+        settings:
+          "Settings & Configurations Control Panel Workspace Options View",
+        myaccount: "Workspace Cloud Account Core Specifications Overview Setup",
+      };
+
+      // Integrated Dropdown Click Event Capture & Routing Target Interceptor
+      function handleDocumentMainTabClick(event, HTMLDOMAnchorNode) {
+        routeToTargetTabFrame("documents", HTMLDOMAnchorNode);
+      }
+
+      function toggleDocumentChevronArrowMenu(event) {
+        event.stopPropagation();
+        event.preventDefault();
+        const containerMenuDivNode = document.getElementById(
+          "documents-submenu-container",
+        );
+        containerMenuDivNode.classList.toggle("open");
+      }
+
+      function routeToTargetTabFrame(
+        targetTabIdentifierToken,
+        activeNavigationAnchorReference = null,
+        bypassTargetSubDocumentFilterLabel = null,
+      ) {
+        document
+          .querySelectorAll(".view-tab-content")
+          .forEach((panel) => panel.classList.remove("active"));
+        document
+          .querySelectorAll(".nav-item")
+          .forEach((link) => link.classList.remove("active"));
+
+        const targetMatchingUIPanelFrameNode = document.getElementById(
+          "view-" + targetTabIdentifierToken,
+        );
+        if (targetMatchingUIPanelFrameNode)
+          targetMatchingUIPanelFrameNode.classList.add("active");
+
+        if (activeNavigationAnchorReference) {
+          activeNavigationAnchorReference.classList.add("active");
+        } else {
+          const defaultAnchorFallbackNode = document.getElementById(
+            "nav-" + targetTabIdentifierToken,
+          );
+          if (defaultAnchorFallbackNode)
+            defaultAnchorFallbackNode.classList.add("active");
+        }
+
+        document.getElementById("current-view-title-label").textContent =
+          routingUIWindowLabelMapLookupMatrix[targetTabIdentifierToken] ||
+          targetTabIdentifierToken;
+
+        // Automatically retract documentation panel bounds safely
+        if (targetTabIdentifierToken !== "documents") {
+          document
+            .getElementById("documents-submenu-container")
+            .classList.remove("open");
+        } else if (bypassTargetSubDocumentFilterLabel) {
+          const documentsFilterSelectDropdownElement = document.getElementById(
+            "documents-filter-select-dropdown-element",
+          );
+          if (documentsFilterSelectDropdownElement) {
+            documentsFilterSelectDropdownElement.value =
+              bypassTargetSubDocumentFilterLabel;
+            runSelectiveDocumentLibraryFiltering(
+              bypassTargetSubDocumentFilterLabel,
+            );
+          }
+        }
+      }
+
+      function triggerModalVisibilityState(
+        targetHTMLModalContainerID,
+        writeVisibleBooleanStateValue,
+      ) {
+        const modalContainerNodeElement = document.getElementById(
+          targetHTMLModalContainerID,
+        );
+        if (modalContainerNodeElement)
+          modalContainerNodeElement.classList.toggle(
+            "active",
+            writeVisibleBooleanStateValue,
+          );
+      }
+
+      function configureInviteTeamMemberFormScope(
+        selectedClearanceRoleLevelConstraint,
+      ) {
+        const inputRoleReadonlyFieldNode = document.getElementById(
+          "form-invite-role-readonly-field",
+        );
+        const headingWindowHeaderTitleTextNode = document.getElementById(
+          "team-member-invite-form-window-header-title-element",
+        );
+
+        if (selectedClearanceRoleLevelConstraint === "driver") {
+          inputRoleReadonlyFieldNode.value =
+            "Commercial Vehicle Operator (Driver Seat Pool)";
+          headingWindowHeaderTitleTextNode.textContent =
+            "Invite Certified Commercial Driver Account Credentials Link";
+        } else {
+          inputRoleReadonlyFieldNode.value =
+            "Desk Operations Management (Logistics Dispatcher Staff)";
+          headingWindowHeaderTitleTextNode.textContent =
+            "Invite Desk Logistics Dispatcher Administration Profile Access Link";
+        }
+        triggerModalVisibilityState("modal-add-team-member", true);
+      }
+
+      function runSelectiveDocumentLibraryFiltering(
+        criterionOptionTokenString,
+      ) {
+        const dataTableRowElementsNodeList = document.querySelectorAll(
+          "#master-documents-library-vault-table tbody tr",
+        );
+        dataTableRowElementsNodeList.forEach((rowElement) => {
+          if (
+            criterionOptionTokenString === "all" ||
+            rowElement.getAttribute("data-docgroup") ===
+              criterionOptionTokenString
+          ) {
+            rowElement.style.display = "table-row";
+          } else {
+            rowElement.style.display = "none";
+          }
+        });
+      }
+
+      function applySchedulesTimeFilterChips(
+        timeFilterIntervalLabelString,
+        triggerButtonContextReference,
+      ) {
+        const targetActivePillChipsList = document.querySelectorAll(
+          "#view-schedules .filter-chip",
+        );
+        targetActivePillChipsList.forEach((chip) =>
+          chip.classList.remove("active"),
+        );
+        triggerButtonContextReference.classList.add("active");
+        renderSchedulesTimelineWorkspaceModuleView(
+          timeFilterIntervalLabelString,
+        );
+      }
+
+      function runLiveRpmPlaygroundCalculations() {
+        const enteredValuationMoneyTotal =
+          parseFloat(document.getElementById("calc-rpm-field-money").value) ||
+          0;
+        const enteredLoadedDistanceMiles =
+          parseFloat(document.getElementById("calc-rpm-field-loaded").value) ||
+          0;
+        const enteredDeadheadRelocationMiles =
+          parseFloat(
+            document.getElementById("calc-rpm-field-deadhead").value,
+          ) || 0;
+
+        const compositeMilesAggregatedSum =
+          enteredLoadedDistanceMiles + enteredDeadheadRelocationMiles;
+        const resultantEvaluatedRatePerMileValue =
+          compositeMilesAggregatedSum > 0
+            ? (
+                enteredValuationMoneyTotal / compositeMilesAggregatedSum
+              ).toFixed(2)
+            : "0.00";
+
+        document.getElementById("calc-rpm-field-output-payout").textContent =
+          `$${resultantEvaluatedRatePerMileValue} / mi`;
+      }
+
+      function runSaaSPricingPrototyperInferenceMath() {
+        const activePlanOptionTierToken = document.getElementById(
+          "saas-pricing-tier-dropdown",
+        ).value;
+        const currentActiveAllocatedDriverSeats =
+          parseInt(
+            document.getElementById("saas-pricing-driver-counter").value,
+          ) || 0;
+
+        let selectedBaseSubscriptionFeeAmount = 0;
+        let scaleFactorDriverSeatUnitCharge = 0;
+        let textBadgeLabelOutputString = "";
+
+        if (activePlanOptionTierToken === "starter") {
+          selectedBaseSubscriptionFeeAmount = 49;
+          scaleFactorDriverSeatUnitCharge = 15;
+          textBadgeLabelOutputString =
+            "Allocated Scope Plan: Starter Setup Option Tier";
+        } else if (activePlanOptionTierToken === "growth") {
+          selectedBaseSubscriptionFeeAmount = 99;
+          scaleFactorDriverSeatUnitCharge = 12;
+          textBadgeLabelOutputString =
+            "Allocated Scope Plan: Growth Team Framework Tier";
+        } else if (activePlanOptionTierToken === "enterprise") {
+          selectedBaseSubscriptionFeeAmount = 199;
+          scaleFactorDriverSeatUnitCharge = 9;
+          textBadgeLabelOutputString =
+            "Allocated Scope Plan: Enterprise Network Matrix Framework";
+        }
+
+        const calculatedFinalInvoiceValuationAmount =
+          selectedBaseSubscriptionFeeAmount +
+          currentActiveAllocatedDriverSeats * scaleFactorDriverSeatUnitCharge;
+        document.getElementById("saas-pricing-payout-text-output").textContent =
+          `$${calculatedFinalInvoiceValuationAmount} / mo`;
+        document.getElementById(
+          "my-account-plan-tier-indicator-badge",
+        ).textContent = textBadgeLabelOutputString;
+      }
+
+      function lookupStatusUIBadgeMarkupClasses(statusLabelStringValue) {
+        switch (statusLabelStringValue.toLowerCase()) {
+          case "in transit":
+            return "badge-blue";
+          case "delivered":
+            return "badge-green";
+          case "loading":
+            return "badge-amber";
+          case "dispatched":
+            return "badge-purple";
+          default:
+            return "badge-blue";
+        }
+      }
+
+      function runBackgroundFinancialBalanceSheetAggregators() {
+        let grossLinehaulAccruedValuationTotal = 0;
+        coreAppDatabaseCache.loads.forEach(
+          (load) => (grossLinehaulAccruedValuationTotal += load.rate),
+        );
+
+        const internalConstantOverheadDeductionsFeeBase = 1200;
+        const trueNetRetainedRetainedTakeHomeProfit =
+          grossLinehaulAccruedValuationTotal -
+          internalConstantOverheadDeductionsFeeBase;
+
+        document.getElementById("m-dash-gross-revenue-text").textContent =
+          `$${grossLinehaulAccruedValuationTotal.toLocaleString()}`;
+        document.getElementById("gross-calc-total-revenue-value").textContent =
+          `$${grossLinehaulAccruedValuationTotal.toLocaleString()}`;
+        document.getElementById("gross-calc-net-retained-value").textContent =
+          `$${trueNetRetainedRetainedTakeHomeProfit.toLocaleString()}`;
+      }
+
+      function renderSchedulesTimelineWorkspaceModuleView(
+        targetSchedulesTimeFilterConstraint = "today",
+      ) {
+        const listWrapperElementNode = document.getElementById(
+          "schedules-timeline-output-list",
+        );
+        if (!listWrapperElementNode) return;
+
+        listWrapperElementNode.innerHTML = "";
+        const targetFilteredRecordSetList = coreAppDatabaseCache.loads.filter(
+          (load) => load.timelineWindow === targetSchedulesTimeFilterConstraint,
+        );
+
+        if (targetFilteredRecordSetList.length === 0) {
+          listWrapperElementNode.innerHTML = `<div style="text-align:center; padding:40px; color:var(--text-muted); font-size:13px;">No freight loads schedules allocated into this target time selection.</div>`;
+          return;
+        }
+
+        targetFilteredRecordSetList.forEach((loadRecord) => {
+          const itemOuterCardElementDiv = document.createElement("div");
+          itemOuterCardElementDiv.className = "schedule-item-card";
+          itemOuterCardElementDiv.innerHTML = `
+            <div class="schedule-route-info">
+              <div style="width:70px; font-size:11px; color:var(--text-tertiary); font-weight:600;">${loadRecord.time}</div>
+              <div>
+                <div style="font-weight:700; color:var(--text-primary); font-size:13px;">Load ID: ${loadRecord.id} &middot; Driver Operator Assigned: ${loadRecord.driver}</div>
+                <div style="font-size:12px; color:var(--text-secondary); margin-top:2px;">
+                  Pickup Destination Hub: <b>${loadRecord.origin}</b> <i class="ti ti-arrow-narrow-right" style="vertical-align:middle; color:var(--text-muted)"></i> Drop Destination Point: <b>${loadRecord.dest}</b>
+                </div>
+              </div>
+            </div>
+            <span class="badge ${lookupStatusUIBadgeMarkupClasses(loadRecord.status)}">${loadRecord.status}</span>
+          `;
+          listWrapperElementNode.appendChild(itemOuterCardElementDiv);
+        });
+      }
+
+      function runUniversalFrameworkDataRendererPipelines() {
+        runBackgroundFinancialBalanceSheetAggregators();
+        renderSchedulesTimelineWorkspaceModuleView("today");
+
+        const unfulfilledActiveLoadsCounterValue =
+          coreAppDatabaseCache.loads.filter(
+            (l) => l.status !== "Delivered",
+          ).length;
+        document.getElementById("m-dash-load-counter").textContent =
+          unfulfilledActiveLoadsCounterValue;
+        document.getElementById("badge-count-loads-ui").textContent =
+          unfulfilledActiveLoadsCounterValue;
+
+        // Ingest reactive select dynamic variables options targets maps
+        const formLoadInputDriverSelectField = document.getElementById(
+          "form-load-input-driver",
+        );
+        const formLoadInputEquipmentSelectField = document.getElementById(
+          "form-load-input-equipment",
+        );
+        const formEqDriverAssignSelectField = document.getElementById(
+          "form-eq-driver-assign-select-field",
+        );
+
+        if (formLoadInputDriverSelectField) {
+          formLoadInputDriverSelectField.innerHTML =
+            coreAppDatabaseCache.drivers
+              .map((d) => `<option value="${d.name}">${d.name}</option>`)
+              .join("");
+        }
+        if (formLoadInputEquipmentSelectField) {
+          formLoadInputEquipmentSelectField.innerHTML =
+            coreAppDatabaseCache.equipment
+              .map(
+                (e) => `<option value="${e.id}">${e.id} (${e.type})</option>`,
+              )
+              .join("");
+        }
+        if (formEqDriverAssignSelectField) {
+          formEqDriverAssignSelectField.innerHTML =
+            coreAppDatabaseCache.drivers
+              .map((d) => `<option value="${d.name}">${d.name}</option>`)
+              .join("") +
+            `<option value="Unassigned">Leave Chassis Trailer Unassigned</option>`;
+        }
+
+        // Dashboard Dispatch Grid Records Matrix Ingestor
+        const dashboardDispatchBoardTableBody = document.querySelector(
+          "#dashboard-dispatch-board-table tbody",
+        );
+        if (dashboardDispatchBoardTableBody) {
+          dashboardDispatchBoardTableBody.innerHTML = coreAppDatabaseCache.loads
+            .slice(0, 5)
+            .map(
+              (load) => `
+            <tr>
+              <td><span class="badge badge-purple">${load.id}</span></td>
+              <td><b>${load.driver}</b></td>
+              <td><span style="font-size:12px; font-weight:500; color:var(--text-secondary);">${load.equipment}</span></td>
+              <td><span style="font-weight:600; font-size:12px;">${load.origin} &rarr; ${load.dest}</span></td>
+              <td><span class="badge ${lookupStatusUIBadgeMarkupClasses(load.status)}">${load.status}</span></td>
+            </tr>
+          `,
+            )
+            .join("");
+        }
+
+        // Master Ledger Table Display Matrix Ingestor Row List
+        const masterLoadsLedgerTableUiBody = document.querySelector(
+          "#master-loads-ledger-table-ui tbody",
+        );
+        if (masterLoadsLedgerTableUiBody) {
+          masterLoadsLedgerTableUiBody.innerHTML = coreAppDatabaseCache.loads
+            .map(
+              (load) => `
+            <tr>
+              <td><span class="badge badge-purple">${load.id}</span></td>
+              <td><div class="user-info-row"><div class="avatar ${load.avatar === "avatar-b" ? "avatar-b" : load.avatar === "avatar-g" ? "avatar-g" : "avatar-p"}">${load.initial}</div><b>${load.driver}</b></div></td>
+              <td><b>${load.equipment}</b></td>
+              <td>${load.origin}</td>
+              <td>${load.dest}</td>
+              <td><b style="color:var(--text-primary); font-size:13px;">$${load.rate.toLocaleString()}</b></td>
+              <td><span class="badge ${lookupStatusUIBadgeMarkupClasses(load.status)}">${load.status}</span></td>
+            </tr>
+          `,
+            )
+            .join("");
+        }
+
+        // Vehicles Fleet Registry Core Equipment Table View List Ingestor Rows
+        const equipmentRegistryMasterTableBody = document.querySelector(
+          "#equipment-registry-master-table tbody",
+        );
+        if (equipmentRegistryMasterTableBody) {
+          equipmentRegistryMasterTableBody.innerHTML =
+            coreAppDatabaseCache.equipment
+              .map(
+                (eq) => `
+            <tr>
+              <td style="font-weight:700; color:var(--text-primary);">${eq.id}</td>
+              <td><b>${eq.type}</b></td>
+              <td><span class="badge badge-blue">${eq.cat}</span></td>
+              <td style="font-size:12px;">${eq.plate}</td>
+              <td>${eq.driver !== "Unassigned" ? `<div class="user-info-row"><div class="avatar ${eq.av === "avatar-b" ? "avatar-b" : eq.av === "avatar-g" ? "avatar-g" : "avatar-p"}">${eq.init}</div>${eq.driver}</div>` : `<span style="color:var(--text-muted); font-style:italic;">Unassigned Capacity Truck</span>`}</td>
+              <td><span class="badge ${eq.status === "Active" ? "badge-green" : "badge-amber"}">${eq.status}</span></td>
+              <td style="font-weight:600; ${eq.due.includes("Overdue") ? "color:var(--red);" : ""}">${eq.due}</td>
+            </tr>
+          `,
+              )
+              .join("");
+        }
+
+        // Drivers Directory Registry List Rows Ingestor Matrix Units
+        const driversRegistryMasterTableBody = document.querySelector(
+          "#drivers-registry-master-table tbody",
+        );
+        if (driversRegistryMasterTableBody) {
+          driversRegistryMasterTableBody.innerHTML =
+            coreAppDatabaseCache.drivers
+              .map(
+                (d) => `
+            <tr>
+              <td><div class="user-info-row"><div class="avatar ${d.style === "avatar-b" ? "avatar-b" : d.style === "avatar-g" ? "avatar-g" : "avatar-p"}">${d.initial}</div><b>${d.name}</b></div></td>
+              <td><span style="display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:6px; background:${d.status === "online" ? "var(--green)" : d.status === "idle" ? "var(--amber)" : "var(--text-muted)"}"></span> ${d.statusText}</td>
+              <td><span class="badge badge-blue">${d.trailer}</span></td>
+              <td style="font-weight:700;">${d.hos}</td>
+            </tr>
+          `,
+              )
+              .join("");
+        }
+
+        // Dashboard Live Active Drivers Quick Status List Block Component Ingestor
+        const dashQuickDriverFeedList = document.getElementById(
+          "dash-quick-driver-feed-list",
+        );
+        if (dashQuickDriverFeedList) {
+          dashQuickDriverFeedList.innerHTML = coreAppDatabaseCache.drivers
+            .map(
+              (d) => `
+            <div style="display:flex; align-items:center; justify-content:space-between; padding:10px 16px; border-bottom:1px solid var(--border-soft)">
+              <div class="user-info-row">
+                <div class="avatar ${d.style === "avatar-b" ? "avatar-b" : d.style === "avatar-g" ? "avatar-g" : "avatar-p"}">${d.initial}</div>
+                <div>
+                  <div style="font-weight:700; font-size:12px; color:var(--text-primary);">${d.name}</div>
+                  <div style="font-size:11px; color:var(--text-tertiary); max-width:140px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${d.statusText}</div>
+                </div>
+              </div>
+              <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:${d.status === "online" ? "var(--green)" : d.status === "idle" ? "var(--amber)" : "var(--text-muted)"}"></span>
+            </div>
+          `,
+            )
+            .join("");
+        }
+
+        // Historical Log Rate Per Mile Analysis Evaluation Rows Ingestor
+        const rpmHistoricalEvalLogsTableBody = document.querySelector(
+          "#rpm-historical-eval-logs-table tbody",
+        );
+        if (rpmHistoricalEvalLogsTableBody) {
+          rpmHistoricalEvalLogsTableBody.innerHTML = coreAppDatabaseCache.loads
+            .map((load) => {
+              const calculatedLoadedOnlyRatePerMile = (
+                load.rate / load.loadedMi
+              ).toFixed(2);
+              const calculatedTrueCombinedRatePerMile = (
+                load.rate /
+                (load.loadedMi + load.deadheadMi)
+              ).toFixed(2);
+              return `
+              <tr>
+                <td><span class="badge badge-purple">${load.id}</span></td>
+                <td>${load.loadedMi} miles</td>
+                <td>${load.deadheadMi} miles</td>
+                <td><b>$${load.rate}</b></td>
+                <td style="color:var(--green); font-weight:700;">$${calculatedLoadedOnlyRatePerMile}/mi</td>
+                <td style="color:var(--text-primary); font-weight:700; background:var(--border-soft); text-align:center;">$${calculatedTrueCombinedRatePerMile}/mi</td>
+              </tr>
+            `;
+            })
+            .join("");
+        }
+      }
+
+      function executeLoadManifestFormSubmissionRegistryInjection() {
+        const selectedDriverTargetProfileName = document.getElementById(
+          "form-load-input-driver",
+        ).value;
+        const selectedEquipmentTargetAssetID = document.getElementById(
+          "form-load-input-equipment",
+        ).value;
+        const textOriginLocationPickupString = document.getElementById(
+          "form-load-input-origin",
+        ).value;
+        const textDestinationLocationDropString = document.getElementById(
+          "form-load-input-dest",
+        ).value;
+
+        // Sum the pricing fields to calculate total cost base metric values
+        const valLinehaulBaseMoney =
+          parseFloat(
+            document.getElementById("form-load-input-rate-linehaul").value,
+          ) || 0;
+        const valFuelSurchargeMoney =
+          parseFloat(
+            document.getElementById("form-load-input-rate-fuel").value,
+          ) || 0;
+        const valAccessorialExtraMoney =
+          parseFloat(
+            document.getElementById("form-load-input-rate-extra").value,
+          ) || 0;
+        const aggregateCalculatedLoadPayoutRateSumValue =
+          valLinehaulBaseMoney +
+          valFuelSurchargeMoney +
+          valAccessorialExtraMoney;
+
+        const selectedRoutingStatusStateLabelString = document.getElementById(
+          "form-load-input-status",
+        ).value;
+
+        const lookupDriverMatchCacheObject = coreAppDatabaseCache.drivers.find(
+          (d) => d.name === selectedDriverTargetProfileName,
+        ) || { style: "avatar-b", initial: "XX" };
+        const autoIncrementedLoadIDSequenceIndex =
+          coreAppDatabaseCache.loads.length + 41;
+        const compositeLoadManifestIDTokenString = `LD-00${autoIncrementedLoadIDSequenceIndex}`;
+
+        coreAppDatabaseCache.loads.unshift({
+          id: compositeLoadManifestIDTokenString,
+          driver: selectedDriverTargetProfileName,
+          avatar: lookupDriverMatchCacheObject.style,
+          initial: lookupDriverMatchCacheObject.initial,
+          equipment: selectedEquipmentTargetAssetID.split(" (")[0],
+          origin: textOriginLocationPickupString,
+          dest: textDestinationLocationDropString,
+          rate: aggregateCalculatedLoadPayoutRateSumValue,
+          status: selectedRoutingStatusStateLabelString,
+          time: "02:30 PM",
+          loadedMi: 340,
+          deadheadMi: 40,
+          timelineWindow: "today",
+        });
+
+        triggerModalVisibilityState("modal-add-load", false);
+        runUniversalFrameworkDataRendererPipelines();
+        routeToTargetTabFrame("loads");
+      }
+
+      function executeFleetEquipmentAssetFormSubmissionInjection() {
+        const inputEqID = document.getElementById("form-eq-id-field").value;
+        const inputEqTypeDescription =
+          document.getElementById("form-eq-type-field").value;
+        const inputEqCategoryGroupType =
+          document.getElementById("form-eq-cat-field").value;
+        const inputEqPlateRegistrationNumber = document.getElementById(
+          "form-eq-plate-field",
+        ).value;
+        const inputAssignedDriverOperatorProfileName = document.getElementById(
+          "form-eq-driver-assign-select-field",
+        ).value;
+
+        const driverMatchCacheObject = coreAppDatabaseCache.drivers.find(
+          (d) => d.name === inputAssignedDriverOperatorProfileName,
+        ) || { style: "avatar-b", initial: "XX" };
+
+        coreAppDatabaseCache.equipment.push({
+          id: inputEqID,
+          type: inputEqTypeDescription,
+          cat: inputEqCategoryGroupType,
+          plate: inputEqPlateRegistrationNumber,
+          driver: inputAssignedDriverOperatorProfileName,
+          av: driverMatchCacheObject.style,
+          init: driverMatchCacheObject.initial,
+          status: "Active",
+          due: "Aug 22, 2026",
+        });
+
+        triggerModalVisibilityState("modal-add-equipment", false);
+        runUniversalFrameworkDataRendererPipelines();
+        routeToTargetTabFrame("equipment");
+      }
+
+      function executeMaintenanceLogEntryFormSubmissionInjection() {
+        const inputUnitIdTarget = document.getElementById(
+          "form-maint-unit-field",
+        ).value;
+        const inputRepairTypeDescription = document.getElementById(
+          "form-maint-type-field",
+        ).value;
+        const inputFacilityVendorName = document.getElementById(
+          "form-maint-vendor-field",
+        ).value;
+        const inputInvoicedCostAmountValue =
+          parseInt(document.getElementById("form-maint-cost-field").value) || 0;
+        const inputClearanceStatusSelectFlagValue = document.getElementById(
+          "form-maint-status-select-field",
+        ).value;
+
+        const masterTableBodyTargetNode = document.querySelector(
+          "#maintenance-registry-master-table tbody",
+        );
+        const customCreatedTableRowNodeElement = document.createElement("tr");
+
+        customCreatedTableRowNodeElement.innerHTML = `
+          <td><b>${inputUnitIdTarget}</b></td>
+          <td>${inputRepairTypeDescription}</td>
+          <td>${inputFacilityVendorName}</td>
+          <td>$${inputInvoicedCostAmountValue.toLocaleString()}</td>
+          <td>Today</td>
+          <td><span class="badge ${inputClearanceStatusSelectFlagValue.includes("Progress") ? "badge-amber" : "badge-green"}">${inputClearanceStatusSelectFlagValue}</span></td>
+        `;
+        masterTableBodyTargetNode.insertBefore(
+          customCreatedTableRowNodeElement,
+          masterTableBodyTargetNode.firstChild,
+        );
+
+        triggerModalVisibilityState("modal-add-maint", false);
+        routeToTargetTabFrame("maintenance");
+      }
+
+      function executeTeamMemberAccessProvisionInvitationWorkflowInjection() {
+        const textInviteNameValue = document.getElementById(
+          "form-invite-name-field",
+        ).value;
+        const textInviteEmailValue = document.getElementById(
+          "form-invite-email-field",
+        ).value;
+        const textRawRoleLabelString = document.getElementById(
+          "form-invite-role-readonly-field",
+        ).value;
+
+        let localRoleShortDisplayLabelString = "Dispatcher Staff Member";
+        let localRoleBadgeClassAssignmentString = "badge-blue";
+        let dynamicNameInitialsExtractionString = "XX";
+
+        if (textInviteNameValue.length > 1) {
+          const brokenStringNamesTokenList = textInviteNameValue.split(" ");
+          dynamicNameInitialsExtractionString =
+            brokenStringNamesTokenList.length > 1
+              ? (
+                  brokenStringNamesTokenList[0][0] +
+                  brokenStringNamesTokenList[1][0]
+                ).toUpperCase()
+              : brokenStringNamesTokenList[0][0].toUpperCase();
+        }
+
+        if (textRawRoleLabelString.includes("Driver")) {
+          localRoleShortDisplayLabelString = "Commercial Driver Operator";
+          localRoleBadgeClassAssignmentString = "badge-amber";
+
+          coreAppDatabaseCache.drivers.push({
+            name: textInviteNameValue,
+            initial: dynamicNameInitialsExtractionString,
+            style: "avatar-p",
+            status: "offline",
+            statusText:
+              "Awaiting Initial Account Mobile Sync Setup Operations Window",
+            hos: "11.0 Hours Reset Clock",
+            trailer: "Pending Assignment Group",
+          });
+        }
+
+        const accountsPermissionsRegistryMasterTableBody =
+          document.querySelector(
+            "#accounts-permissions-registry-master-table tbody",
+          );
+        const newRecordRowElementDiv = document.createElement("tr");
+
+        newRecordRowElementDiv.innerHTML = `
+          <td>
+            <div class="user-info-row">
+              <div class="avatar avatar-p">${dynamicNameInitialsExtractionString}</div>
+              <div>
+                <div class="user-name-title">${textInviteNameValue}</div>
+                <div class="user-sub-title">${textRawRoleLabelString.split(" (")[0]}</div>
+              </div>
+            </div>
+          </td>
+          <td><span class="badge ${localRoleBadgeClassAssignmentString}" style="font-size:10px; text-transform:uppercase;">${localRoleShortDisplayLabelString}</span></td>
+          <td style="font-size:12px;">${textInviteEmailValue}</td>
+          <td>Today</td>
+          <td><span class="badge badge-amber">Pending Secure Activation Verification Handshake</span></td>
+          <td>
+            <label class="toggle-element">
+              <input type="checkbox" checked>
+              <span class="toggle-background"></span>
+            </label>
+          </td>
+        `;
+
+        accountsPermissionsRegistryMasterTableBody.appendChild(
+          newRecordRowElementDiv,
+        );
+        triggerModalVisibilityState("modal-add-team-member", false);
+        runUniversalFrameworkDataRendererPipelines();
+        routeToTargetTabFrame("accounts");
+      }
+
+      const rolePermissionClearancesArrayMatrixLookupTokens = {
+        owner: [
+          "nav-dashboard",
+          "nav-loads",
+          "nav-schedules",
+          "nav-gross",
+          "nav-rpm",
+          "nav-equipment",
+          "nav-drivers",
+          "nav-documents",
+          "nav-maintenance",
+          "nav-messages",
+          "nav-accounts",
+          "nav-settings",
+          "nav-myaccount",
+        ],
+        dispatcher: [
+          "nav-dashboard",
+          "nav-loads",
+          "nav-schedules",
+          "nav-drivers",
+          "nav-documents",
+          "nav-maintenance",
+          "nav-messages",
+        ],
+        driver: ["nav-dashboard", "nav-messages"],
+      };
+
+      function swapSystemViewRoleContext(
+        selectedTargetRoleToken,
+        buttonHTMLContextReference,
+      ) {
+        document
+          .querySelectorAll(".switcher-btn")
+          .forEach((btn) => btn.classList.remove("active"));
+        buttonHTMLContextReference.classList.add("active");
+
+        const matchingAllowedNavElementsList =
+          rolePermissionClearancesArrayMatrixLookupTokens[
+            selectedTargetRoleToken
+          ];
+        document.querySelectorAll(".nav-item[id]").forEach((linkItem) => {
+          const identificationElementIDToken = linkItem.id;
+          linkItem.classList.toggle(
+            "disabled",
+            !matchingAllowedNavElementsList.includes(
+              identificationElementIDToken,
+            ),
+          );
+        });
+
+        const adminHeadingSectionBlock = document.getElementById(
+          "admin-heading-section-block",
+        );
+        if (adminHeadingSectionBlock) {
+          adminHeadingSectionBlock.style.opacity =
+            selectedTargetRoleToken === "owner" ? "1" : "0.15";
+          adminHeadingSectionBlock.style.pointerEvents =
+            selectedTargetRoleToken === "owner" ? "auto" : "none";
+        }
+
+        routeToTargetTabFrame(
+          "dashboard",
+          document.getElementById("nav-dashboard"),
+        );
+      }
+
+      window.addEventListener("DOMContentLoaded", () => {
+        runUniversalFrameworkDataRendererPipelines();
+        runLiveRpmPlaygroundCalculations();
+        runSaaSPricingPrototyperInferenceMath();
+      });
+    </script>
+  </body>
+</html>
